@@ -1,8 +1,18 @@
-function getAllUsers(req, res) {}
-function getUserById(req, res) {}
-function postUser(req, res) {}
-function udpateUser(req, res) {}
-function deleteUser(req, res) {}
+const db = require("../../db");
+
+async function getAllUsers(req, res) {
+  try {
+    const users = await db.user.findMany();
+    res.json({ result: users });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+}
+async function getUserById(req, res) {}
+async function postUser(req, res) {}
+async function udpateUser(req, res) {}
+async function deleteUser(req, res) {}
 
 module.exports = {
   getAllUsers,
