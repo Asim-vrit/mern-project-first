@@ -21,6 +21,7 @@ async function login(req, res) {
       res.status(401).json({ error: "Email/Password doesnt match" });
       return;
     }
+
     const token = jwt.sign(
       {
         exp: Math.floor(Date.now() / 1000) + 60 * 60,

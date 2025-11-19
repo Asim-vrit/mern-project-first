@@ -4,8 +4,18 @@ const users = require("./routes/users");
 const products = require("./routes/products");
 const auth = require("./routes/auth");
 const app = express();
+const cors = require("cors");
+
 const parser = bodyParser.json();
 const port = 3000;
+
+app.use(
+  cors({
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  })
+);
+
 app.use(parser);
 
 app.use(users);
