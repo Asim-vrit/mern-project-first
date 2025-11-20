@@ -13,9 +13,9 @@ const {
 const router = express.Router();
 
 router.get("/users", validateToken, superUserOnly, getAllUsers);
-router.get("/users/:id", getUserById);
-router.post("/users", postUser);
-router.put("/users/:id", udpateUser);
-router.delete("/users/:id", deleteUser);
+router.get("/users/:id", validateToken, superUserOnly, getUserById);
+router.post("/users", validateToken, superUserOnly, postUser);
+router.put("/users/:id", validateToken, superUserOnly, udpateUser);
+router.delete("/users/:id", validateToken, superUserOnly, deleteUser);
 
 module.exports = router;

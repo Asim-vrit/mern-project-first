@@ -2,7 +2,16 @@ const db = require("../../db");
 
 async function getAllUsers(req, res) {
   try {
-    const users = await db.user.findMany();
+    const users = await db.user.findMany({
+      select: {
+        email: true,
+        id: true,
+        name: true,
+        role: true,
+        created_at: true,
+        updated_at: true,
+      },
+    });
     res.json({ result: users });
   } catch (error) {
     console.log(error);

@@ -30,4 +30,5 @@ model Product {
 enum Roles {
   SUPERUSER
   STAFF
+  USER
 }

@@ -13,7 +13,6 @@ function validateToken(req, res, next) {
       return;
     }
     const decodedToken = jwt.verify(bearerToken, process.env.JWT_SECRET);
-    console.log(decodedToken);
     req.role = decodedToken.role;
     req.user_id = decodedToken.id;
     next();
@@ -41,4 +40,22 @@ function superUserOnly(req, res, next) {
   }
 }
 
-module.exports = { validateToken, superUserOnly };
+function staffOnly(req, res, next) {
+  try {
+    if (!req.role) {
+      res.status(401).json({ error: "Valid token not found" });
+      return;
+    }
+    if (req.role === "STAFF" || req.role === "SUPERUSER") {
+      next();
+      return;
+    }
+    res.status(403).json({ error: "Forbidden request" });
+    return;
+  } catch (error) {
+    res.status(500).json({ error: "Forbidden request" });
+    return;
+  }
+}
+
+module.exports = { validateToken, superUserOnly, staffOnly };
