@@ -107,5 +107,38 @@ async function getMe(req, res) {
     res.status(500).json({ error: "Something went wrong" });
   }
 }
+async function changePassword(req, res) {
+  try {
+    const id = req.user_id;
+    const oldPassword = req.body.oldPassword;
+    const newPassword = req.body.newPassword;
+    if (!oldPassword || !newPassword) {
+      res
+        .status(400)
+        .json({ error: "Both old and new password are required!!" });
+      return;
+    }
+    const user = await db.user.findUnique({ where: { id: id } });
+    const doesOldPasswordMatch = await bcrypt.compare(
+      oldPassword,
+      user.password
+    );
+    if (!doesOldPasswordMatch) {
+      res.status(400).json({ error: "Your old password does not match!!!" });
+      return;
+    }
+    if (oldPassword === newPassword) {
+      res.status(400).json({ error: "Old and new password cannot be same" });
+      return;
+    }
+    const newHash = await bcrypt.hash(newPassword, 10);
+    await db.user.update({ where: { id: id }, data: { password: newHash } });
+    res.json({ result: "Password is successfully changed!!!" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Something went wrong!" });
+    return;
+  }
+}
 
-module.exports = { login, register, staffRegister, getMe };
+module.exports = { login, register, staffRegister, getMe, changePassword };

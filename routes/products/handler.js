@@ -22,7 +22,6 @@ async function getProductById(req, res) {
 
 async function postProduct(req, res) {
   try {
-    console.log(req.role, req.user_id);
     const title = req.body.title;
     const description = req.body.description || "";
     const price = req.body.price || 0;
