@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const users = require("./routes/users");
 const products = require("./routes/products");
 const auth = require("./routes/auth");
+const cart = require("./routes/cart");
 const app = express();
 const cors = require("cors");
 
@@ -21,6 +22,7 @@ app.use(parser);
 app.use(users);
 app.use(products);
 app.use(auth);
+app.use(cart);
 
 app.get("/", (req, res) => {
   res.json({ message: "Its working" });

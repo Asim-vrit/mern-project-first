@@ -16,6 +16,8 @@ model User {
   role Roles @default(STAFF)
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  userCart UserCart[]
 }
 model Product {
   id    Int     @id @default(autoincrement())
@@ -25,6 +27,22 @@ model Product {
   rating Int
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
+
+  userCart UserCart[]
+}
+
+model UserCart {
+  id    Int     @id @default(autoincrement())
+  user_id Int
+  product_id Int
+  count Int @default(1)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user User @relation(fields: [user_id],references: [id], onDelete: Cascade)
+  product Product @relation(fields: [product_id],references: [id], onDelete: Cascade)
+
+  @@unique([user_id, product_id])
 }
 
 enum Roles {
