@@ -1,4 +1,5 @@
 const db = require("../../db");
+const { productSchema } = require("../../utils/schema");
 
 async function getAllProducts(req, res) {
   try {

@@ -1,0 +1,31 @@
+npm install --save-dev typescript @types/node
+npm install --save-dev ts-node nodemon
+
+npm install --save-dev @types/express
+
+tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "lib": ["ES2020"],
+    "outDir": "./dist",
+    "rootDir": "./",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "checkJs": false,
+    "moduleResolution": "node"
+  },
+  "include": ["**/*.ts", "**/*.js"],
+  "exclude": ["node_modules", "dist", "generated"]
+}
+
+"scripts": {
+    "dev": "nodemon --exec ts-node index.js",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  }
