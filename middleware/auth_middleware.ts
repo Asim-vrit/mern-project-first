@@ -1,6 +1,12 @@
-var jwt = require("jsonwebtoken");
+import { NextFunction, Response } from "express";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { AuthRequest } from "../types/global-types";
 
-function validateToken(req, res, next) {
+interface CustomJwtPayload extends JwtPayload {
+  id: string;
+  role: string;
+}
+function validateToken(req: AuthRequest, res: Response, next: NextFunction) {
   try {
     const token = req.headers?.authorization;
     if (!token) {
@@ -12,7 +18,12 @@ function validateToken(req, res, next) {
       res.status(401).json({ error: "Token is invalid!!" });
       return;
     }
-    const decodedToken = jwt.verify(bearerToken, process.env.JWT_SECRET);
+
+    const decodedToken = jwt.verify(
+      bearerToken,
+      process.env.JWT_SECRET || ""
+    ) as CustomJwtPayload;
+
     req.role = decodedToken.role;
     req.user_id = decodedToken.id;
     next();
@@ -22,7 +33,7 @@ function validateToken(req, res, next) {
   }
 }
 
-function superUserOnly(req, res, next) {
+function superUserOnly(req: AuthRequest, res: Response, next: NextFunction) {
   try {
     if (!req.role) {
       res.status(401).json({ error: "Valid token not found" });
@@ -40,7 +51,7 @@ function superUserOnly(req, res, next) {
   }
 }
 
-function staffOnly(req, res, next) {
+function staffOnly(req: AuthRequest, res: Response, next: NextFunction) {
   try {
     if (!req.role) {
       res.status(401).json({ error: "Valid token not found" });
@@ -58,4 +69,4 @@ function staffOnly(req, res, next) {
   }
 }
 
-module.exports = { validateToken, superUserOnly, staffOnly };
+export { staffOnly, superUserOnly, validateToken };

@@ -1,11 +1,12 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const users = require("./routes/users");
-const products = require("./routes/products");
-const auth = require("./routes/auth");
-const cart = require("./routes/cart");
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import { router as users } from "./routes/users";
+import { router as auth } from "./routes/auth";
+import { router as products } from "./routes/products";
+import { router as cart } from "./routes/cart";
+
 const app = express();
-const cors = require("cors");
 
 const parser = bodyParser.json();
 const port = 3000;

@@ -1,15 +1,13 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   login,
   register,
   staffRegister,
   getMe,
   changePassword,
-} = require("./handler");
-const {
-  validateToken,
-  superUserOnly,
-} = require("../../middleware/auth_middleware");
+} from "./handler";
+import { validateToken, superUserOnly } from "../../middleware/auth_middleware";
+
 const router = express.Router();
 
 router.post("/login", login);
@@ -18,4 +16,4 @@ router.post("/register", register);
 router.get("/me", validateToken, getMe);
 router.post("/change-password", validateToken, changePassword);
 
-module.exports = router;
+export { router };

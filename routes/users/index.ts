@@ -1,19 +1,14 @@
-const express = require("express");
-const {
+import express from "express";
+import {
   getAllUsers,
   getUserById,
   postUser,
   udpateUser,
   deleteUser,
-} = require("./handler");
-const {
-  validateToken,
-  superUserOnly,
-} = require("../../middleware/auth_middleware");
-const { userSchema } = require("../../utils/schema");
-const {
-  validationMiddleware,
-} = require("../../middleware/validation_middleware");
+} from "./handler";
+import { validateToken, superUserOnly } from "../../middleware/auth_middleware";
+import { userSchema } from "../../utils/schema";
+import { validationMiddleware } from "../../middleware/validation_middleware";
 
 const router = express.Router();
 
@@ -29,4 +24,4 @@ router.post(
 router.put("/users/:id", validateToken, superUserOnly, udpateUser);
 router.delete("/users/:id", validateToken, superUserOnly, deleteUser);
 
-module.exports = router;
+export { router };

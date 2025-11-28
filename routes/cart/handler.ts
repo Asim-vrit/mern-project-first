@@ -1,6 +1,8 @@
-const db = require("../../db");
-
-async function getAllCarts(req, res) {
+import db from "../../db";
+import { Request, Response } from "express";
+import { AuthRequest } from "../../types/global-types";
+("express");
+async function getAllCarts(req: Request, res: Response) {
   try {
     const cart = await db.userCart.findMany({
       include: { user: true, product: true },
@@ -12,7 +14,7 @@ async function getAllCarts(req, res) {
     return;
   }
 }
-async function getMyCart(req, res) {
+async function getMyCart(req: AuthRequest, res: Response) {
   try {
     const cart = await db.userCart.findMany({
       where: { user_id: req.user_id },
@@ -26,9 +28,9 @@ async function getMyCart(req, res) {
     return;
   }
 }
-async function addToCart(req, res) {
+async function addToCart(req: AuthRequest, res: Response) {
   try {
-    const userid = req.user_id;
+    const userid = req.user_id || "";
     const productId = req.body?.productId;
     if (!productId) {
       res.status(400).json({ error: "Product id is required" });
@@ -62,4 +64,4 @@ async function addToCart(req, res) {
   }
 }
 
-module.exports = { getAllCarts, addToCart, getMyCart };
+export { getAllCarts, addToCart, getMyCart };

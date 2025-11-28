@@ -1,8 +1,12 @@
-const db = require("../../db");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-
-async function login(req, res) {
+import db from "../../db";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+import { Request, Response } from "express";
+interface AuthRequest extends Request {
+  role?: string;
+  user_id?: string;
+}
+async function login(req: Request, res: Response) {
   try {
     if (!req.body?.email || !req.body?.password) {
       res.status(400).json({ error: "Bad request" });
@@ -30,7 +34,7 @@ async function login(req, res) {
         id: existingUser.id,
         role: existingUser.role,
       },
-      process.env.JWT_SECRET
+      process.env.JWT_SECRET || ""
     );
     res.json({
       result: "Login Successful",
@@ -39,7 +43,7 @@ async function login(req, res) {
   } catch (error) {}
 }
 
-async function staffRegister(req, res) {
+async function staffRegister(req: Request, res: Response) {
   try {
     if (!req.body?.email || !req.body?.password || !req.body?.name) {
       res.status(400).json({ error: "Bad request" });
@@ -62,7 +66,7 @@ async function staffRegister(req, res) {
     });
   } catch (error) {}
 }
-async function register(req, res) {
+async function register(req: Request, res: Response) {
   try {
     if (!req.body?.email || !req.body?.password || !req.body?.name) {
       res.status(400).json({ error: "Bad request" });
@@ -88,7 +92,7 @@ async function register(req, res) {
   } catch (error) {}
 }
 
-async function getMe(req, res) {
+async function getMe(req: AuthRequest, res: Response) {
   try {
     const id = req.user_id;
     const user = await db.user.findUnique({
@@ -107,7 +111,7 @@ async function getMe(req, res) {
     res.status(500).json({ error: "Something went wrong" });
   }
 }
-async function changePassword(req, res) {
+async function changePassword(req: AuthRequest, res: Response) {
   try {
     const id = req.user_id;
     const oldPassword = req.body.oldPassword;
@@ -119,6 +123,10 @@ async function changePassword(req, res) {
       return;
     }
     const user = await db.user.findUnique({ where: { id: id } });
+    if (!user) {
+      res.status(400).json({ error: "User doesnt exist" });
+      return;
+    }
     const doesOldPasswordMatch = await bcrypt.compare(
       oldPassword,
       user.password
@@ -141,4 +149,4 @@ async function changePassword(req, res) {
   }
 }
 
-module.exports = { login, register, staffRegister, getMe, changePassword };
+export { login, register, staffRegister, getMe, changePassword };

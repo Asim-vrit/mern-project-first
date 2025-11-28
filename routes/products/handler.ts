@@ -1,7 +1,6 @@
-const db = require("../../db");
-const { productSchema } = require("../../utils/schema");
-
-async function getAllProducts(req, res) {
+import db from "../../db";
+import { Request, Response } from "express";
+async function getAllProducts(req: Request, res: Response) {
   try {
     const products = await db.product.findMany();
     res.json({ result: products });
@@ -11,7 +10,7 @@ async function getAllProducts(req, res) {
   }
 }
 
-async function getProductById(req, res) {
+async function getProductById(req: Request, res: Response) {
   try {
     const products = await db.product.findMany();
     res.json({ result: products });
@@ -21,7 +20,7 @@ async function getProductById(req, res) {
   }
 }
 
-async function postProduct(req, res) {
+async function postProduct(req: Request, res: Response) {
   try {
     const title = req.body.title;
     const description = req.body.description || "";
@@ -46,7 +45,7 @@ async function postProduct(req, res) {
   }
 }
 
-async function udpateProduct(req, res) {
+async function udpateProduct(req: Request, res: Response) {
   try {
     const products = await db.product.findMany();
     res.json({ result: products });
@@ -56,7 +55,7 @@ async function udpateProduct(req, res) {
   }
 }
 
-async function deleteProduct(req, res) {
+async function deleteProduct(req: Request, res: Response) {
   try {
     const products = await db.product.findMany();
     res.json({ result: products });
@@ -66,7 +65,7 @@ async function deleteProduct(req, res) {
   }
 }
 
-module.exports = {
+export {
   getAllProducts,
   getProductById,
   postProduct,

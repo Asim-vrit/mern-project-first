@@ -1,4 +1,4 @@
-const { default: z } = require("zod");
+import z from "zod";
 
 const productSchema = z.object({
   title: z.string({ error: "Title is required" }),
@@ -14,4 +14,4 @@ const userSchema = z.object({
   roles: z.enum(["SUPERUSER", "STAFF", "USER"]).optional(),
 });
 
-module.exports = { productSchema, userSchema };
+export { productSchema, userSchema };
