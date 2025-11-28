@@ -2,10 +2,8 @@ import db from "../../db";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { Request, Response } from "express";
-interface AuthRequest extends Request {
-  role?: string;
-  user_id?: string;
-}
+import { AuthRequest } from "../../types/global-types";
+
 async function login(req: Request, res: Response) {
   try {
     if (!req.body?.email || !req.body?.password) {
