@@ -1,7 +1,7 @@
 import db from "../../db";
 import { Request, Response } from "express";
 import { AuthRequest } from "../../types/global-types";
-("express");
+
 async function getAllCarts(req: Request, res: Response) {
   try {
     const cart = await db.userCart.findMany({
