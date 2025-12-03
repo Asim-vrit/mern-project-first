@@ -1,14 +1,14 @@
 import express from "express";
+import { staffOnly, validateToken } from "../../middleware/auth_middleware";
+import { validationMiddleware } from "../../middleware/validation_middleware";
+import { productSchema } from "../../utils/schema";
 import {
+  deleteProduct,
   getAllProducts,
   getProductById,
   postProduct,
   udpateProduct,
-  deleteProduct,
 } from "./handler";
-import { validateToken, staffOnly } from "../../middleware/auth_middleware";
-import { productSchema } from "../../utils/schema";
-import { validationMiddleware } from "../../middleware/validation_middleware";
 const router = express.Router();
 
 router.get("/products", getAllProducts);
