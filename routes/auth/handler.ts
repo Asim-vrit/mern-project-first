@@ -87,15 +87,59 @@ async function register(req: Request, res: Response) {
     const now = new Date();
     now.setMinutes(now.getMinutes() + 10);
     const otp = generateOTP();
-    await db.tempUser.create({
-      data: { email, name, password: hashedPassword, otp: otp, expiry: now },
+    const existingTempUser = await db.tempUser.findFirst({
+      where: { email: email },
     });
+    if (existingTempUser) {
+      await db.tempUser.update({
+        where: { email: email },
+        data: { otp: otp, expiry: now },
+      });
+    } else
+      await db.tempUser.create({
+        data: { email, name, password: hashedPassword, otp: otp, expiry: now },
+      });
     const info = await transporter.sendMail({
       from: `"Product team" <${process.env.EMAIL_USER}> `,
       to: email,
       subject: "Your registration OTP",
       text: "Here is your registration OTP ", // plain‑text body
       html: registration_otp_template(otp, name), // HTML body
+    });
+    console.log(nodemailer.getTestMessageUrl(info));
+    res.json({
+      result: "OTP sent successfully",
+    });
+  } catch (error) {}
+}
+async function resendOtp(req: Request, res: Response) {
+  try {
+    if (!req.body?.email) {
+      res.status(400).json({ error: "Bad request" });
+      return;
+    }
+    const { email } = req.body;
+
+    const existingTempUser = await db.tempUser.findFirst({
+      where: { email: email },
+    });
+    if (!existingTempUser) {
+      res.status(404).json({ error: "Email not found!" });
+      return;
+    }
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + 10);
+    const otp = generateOTP();
+    await db.tempUser.update({
+      where: { email: email },
+      data: { otp: otp, expiry: now },
+    });
+    const info = await transporter.sendMail({
+      from: `"Product team" <${process.env.EMAIL_USER}> `,
+      to: email,
+      subject: "Your registration OTP",
+      text: "Here is your registration OTP ", // plain‑text body
+      html: registration_otp_template(otp, existingTempUser.name), // HTML body
     });
     console.log(nodemailer.getTestMessageUrl(info));
     res.json({
@@ -217,5 +261,6 @@ export {
   staffRegister,
   getMe,
   changePassword,
+  resendOtp,
   verifyRegistration,
 };

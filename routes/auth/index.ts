@@ -6,6 +6,7 @@ import {
   getMe,
   changePassword,
   verifyRegistration,
+  resendOtp,
 } from "./handler";
 import { validateToken, superUserOnly } from "../../middleware/auth_middleware";
 
@@ -17,5 +18,5 @@ router.post("/register", register);
 router.post("/verify-registration-otp", verifyRegistration);
 router.get("/me", validateToken, getMe);
 router.post("/change-password", validateToken, changePassword);
-
+router.post("/resend-otp", resendOtp);
 export { router };
