@@ -9,6 +9,7 @@ import {
   postProduct,
   udpateProduct,
 } from "./handler";
+import { upload } from "../../uploads";
 const router = express.Router();
 
 router.get("/products", getAllProducts);
@@ -20,7 +21,13 @@ router.post(
   validationMiddleware(productSchema),
   postProduct
 );
-router.put("/products/:id", validateToken, staffOnly, udpateProduct);
+router.put(
+  "/products/:id",
+  validateToken,
+  staffOnly,
+  upload.single("image"),
+  udpateProduct
+);
 router.delete("/products/:id", validateToken, staffOnly, deleteProduct);
 
 export { router };

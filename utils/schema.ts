@@ -3,8 +3,8 @@ import z from "zod";
 const productSchema = z.object({
   title: z.string({ error: "Title is required" }),
   description: z.string({ error: "Description is required" }),
-  price: z.number({ error: "Price is required" }),
-  rating: z.number({ error: "Rating is required" }),
+  price: z.coerce.number({ error: "Price is required" }),
+  rating: z.coerce.number({ error: "Rating is required" }),
 });
 
 const userSchema = z.object({
