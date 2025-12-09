@@ -1,10 +1,14 @@
 import db from "../../db";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { fileDelete, fileUpload } from "../../utils/fileService";
-async function getAllProducts(req: Request, res: Response) {
+async function getAllProducts(req: Request, res: Response, next: NextFunction) {
   try {
     const products = await db.product.findMany();
-    res.json({ result: products });
+    next({
+      success: true,
+      data: products,
+      message: "Products fetched successfully!",
+    });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: "Something went wrong" });

@@ -1,17 +1,21 @@
 import db from "../../db";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { AuthRequest } from "../../types/global-types";
 import { transporter } from "../../utils/mailService";
 import nodemailer from "nodemailer";
 import { welcomeTemplate } from "../../templates/welcome";
 import { generateOTP } from "../../utils/mathUtils";
 import { registration_otp_template } from "../../templates/registration_otp";
-async function login(req: Request, res: Response) {
+async function login(req: Request, res: Response, next: NextFunction) {
   try {
     if (!req.body?.email || !req.body?.password) {
-      res.status(400).json({ error: "Bad request" });
+      next({
+        status: 400,
+        success: false,
+        message: "Bad request",
+      });
       return;
     }
     const { password, email } = req.body;
@@ -20,12 +24,20 @@ async function login(req: Request, res: Response) {
     });
 
     if (!existingUser) {
-      res.status(401).json({ error: "Email/Password doesnt match" });
+      next({
+        status: 401,
+        success: false,
+        message: "Email/Password doesnt match",
+      });
       return;
     }
     const passwordMatch = await bcrypt.compare(password, existingUser.password);
     if (!passwordMatch) {
-      res.status(401).json({ error: "Email/Password doesnt match" });
+      next({
+        status: 401,
+        success: false,
+        message: "Email/Password doesnt match",
+      });
       return;
     }
 
@@ -38,11 +50,15 @@ async function login(req: Request, res: Response) {
       },
       process.env.JWT_SECRET || ""
     );
-    res.json({
-      result: "Login Successful",
-      token: token,
+    next({
+      status: 200,
+      success: true,
+      message: "Logged in successfully!!",
+      data: { token },
     });
-  } catch (error) {}
+  } catch (error) {
+    next({ status: 500, success: false, message: "Something went wrong!!" });
+  }
 }
 
 async function staffRegister(req: Request, res: Response) {
