@@ -6,19 +6,22 @@ import { router as cart } from "./routes/cart";
 import { router as products } from "./routes/products";
 import { router as users } from "./routes/users";
 import { response_handler } from "./middleware/response_handler";
+import helmet from "helmet";
+import mongoSanitize from "express-mongo-sanitize";
 const app = express();
 
 const parser = bodyParser.json();
 
 const port = 3000;
+app.use(helmet());
 
 app.use(
   cors({
-    origin: "*",
+    origin: process.env.FRONTEND_URL || "localhost",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
-
+app.use(mongoSanitize());
 app.use(parser);
 
 app.use(users);
@@ -33,6 +36,13 @@ app.get("/", (req, res) => {
 app.use(response_handler);
 
 app.use("/uploads", express.static("uploads"));
-app.listen(port, () => {
-  console.log("App running in port " + port);
-});
+
+// Only start server if not in Vercel environment
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, () => {
+    console.log("App running in port " + port);
+  });
+}
+
+// Export for Vercel
+export default app;

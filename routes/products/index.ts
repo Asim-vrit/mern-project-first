@@ -10,9 +10,10 @@ import {
   udpateProduct,
 } from "./handler";
 import { upload } from "../../uploads";
+import { limiter } from "../../utils/rate_limits";
 const router = express.Router();
 
-router.get("/products", getAllProducts);
+router.get("/products", limiter, getAllProducts);
 router.get("/products/:id", getProductById);
 router.post(
   "/products",
