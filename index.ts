@@ -17,7 +17,7 @@ app.use(helmet());
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "localhost",
+    origin: "localhost",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   })
 );
@@ -36,13 +36,6 @@ app.get("/", (req, res) => {
 app.use(response_handler);
 
 app.use("/uploads", express.static("uploads"));
-
-// Only start server if not in Vercel environment
-if (process.env.NODE_ENV !== "production") {
-  app.listen(port, () => {
-    console.log("App running in port " + port);
-  });
-}
-
-// Export for Vercel
-export default app;
+app.listen(port, () => {
+  console.log("App running in port " + port);
+});
