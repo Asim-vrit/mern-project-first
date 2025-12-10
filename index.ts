@@ -36,6 +36,11 @@ app.get("/", (req, res) => {
 app.use(response_handler);
 
 app.use("/uploads", express.static("uploads"));
-app.listen(port, () => {
-  console.log("App running in port " + port);
-});
+
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, () => {
+    console.log("App running in port " + port);
+  });
+}
+
+export default app;
