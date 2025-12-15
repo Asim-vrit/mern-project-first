@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { NextFunction, Request, Response } from "express";
 import { AuthRequest } from "../../types/global-types";
-import { transporter } from "../../utils/mailService";
+import { queueEmail, transporter } from "../../utils/mailService";
 import nodemailer from "nodemailer";
 import { welcomeTemplate } from "../../templates/welcome";
 import { generateOTP } from "../../utils/mathUtils";
@@ -115,14 +115,21 @@ async function register(req: Request, res: Response) {
       await db.tempUser.create({
         data: { email, name, password: hashedPassword, otp: otp, expiry: now },
       });
-    const info = await transporter.sendMail({
-      from: `"Product team" <${process.env.EMAIL_USER}> `,
-      to: email,
-      subject: "Your registration OTP",
-      text: "Here is your registration OTP ", // plain‑text body
-      html: registration_otp_template(otp, name), // HTML body
-    });
-    console.log(nodemailer.getTestMessageUrl(info));
+
+    const st = Date.now();
+    // const info = await transporter.sendMail({
+    //   from: `"Product team" <${process.env.EMAIL_USER}>`,
+    //   to: email,
+    //   subject: "Your registration OTP",
+    //   text: "Here is your registration OTP",
+    //   html: registration_otp_template(otp, name),
+    // });
+    await queueEmail(email, otp, name);
+
+    const et = Date.now();
+
+    const totalTime = et - st;
+    console.log("Total time taken to send mail: " + totalTime);
     res.json({
       result: "OTP sent successfully",
     });

@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { emailQueue } from "../workers/emailQueue";
 
 const transporter = nodemailer.createTransport({
   host: process.env.EMAIL_HOST,
@@ -9,4 +10,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export { transporter };
+const queueEmail = async (email: string, otp: number, name: string) => {
+  await emailQueue.add("send-email", {
+    email,
+    otp,
+    name,
+  });
+
+  console.log("Email queued successfully");
+};
+
+export { transporter, queueEmail };

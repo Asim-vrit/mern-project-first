@@ -8,6 +8,8 @@ import { router as users } from "./routes/users";
 import { response_handler } from "./middleware/response_handler";
 import helmet from "helmet";
 import mongoSanitize from "express-mongo-sanitize";
+import "./workers/emailWorker";
+
 const app = express();
 
 const parser = bodyParser.json();
